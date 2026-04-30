@@ -39,3 +39,60 @@ html.dark {
 * {
   transition: background-color 0.3s, color 0.3s;
 }
+/* 🔥 MODERN CALENDAR */
+
+.react-calendar {
+  width: 100% !important;
+  border: none;
+  background: transparent;
+  font-family: "Inter", sans-serif;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.react-calendar__navigation button {
+  color: #6FA9B7;
+  font-weight: 600;
+  background: none;
+  border: none;
+}
+
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.react-calendar__tile {
+  border-radius: 10px;
+  padding: 8px 0;
+  transition: all 0.2s ease;
+}
+
+.react-calendar__tile:hover {
+  background: #e6f4f7;
+}
+
+.react-calendar__tile--active {
+  background: #6FA9B7 !important;
+  color: white;
+  border-radius: 10px;
+}
+
+.react-calendar__tile--now {
+  background: #d1eaf0;
+  border-radius: 10px;
+}
+.react-calendar__tile--active::after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 5px;
+  background: white;
+  border-radius: 50%;
+  margin: 3px auto 0;
+}

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Toast from "./context/Toast";
 import Login from "./pages/Login";
 import DoctorPatientsPage from "./pages/doctor/DoctorPatientsPage";
+import { TaskProvider } from "./context/TaskContext";
 
 // Layouts
 import DoctorLayout from "./layouts/DoctorLayout";
@@ -19,11 +20,16 @@ import DoctorRequestsPage from "./pages/doctor/DoctorRequestsPage";
 
 // Protected Route
 import ProtectedRoute from "./routes/ProtectedRoute";
+import TaskPage from "./pages/doctor/TaskPage";
+
 
 function App() {
   return (
+    <TaskProvider>
+      
     <BrowserRouter>
       <Routes>
+        
 
         {/* LOGIN */}
         <Route path="/" element={<Login />} />
@@ -46,6 +52,8 @@ function App() {
           <Route path="prescriptions" element={<div>Reçeteler</div>} />
           <Route path="profile" element={<div>Profil</div>} />
         </Route>
+
+        <Route path="/doctor/tasks" element={<TaskPage />} />
 
         {/* ================= HASTA ================= */}
         <Route
@@ -80,6 +88,7 @@ function App() {
 
       <Toast />
     </BrowserRouter>
+    </TaskProvider>
   );
 }
 
