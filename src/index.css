@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🔥 FONT (EKLENDİ) */
+@layer base {
+  body {
+    @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* 🔥 DARK MODE ROOT */
+html {
+  @apply bg-white text-black;
+}
+
+html.dark {
+  @apply bg-gray-900 text-white;
+}
+
+/* 🔥 ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* 🔥 SMOOTH TRANSITION */
+* {
+  transition: background-color 0.3s, color 0.3s;
+}
