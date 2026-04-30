@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { patients } from "../data/patients";
 import { Moon, Sun, Eye, EyeOff, Loader2 } from "lucide-react";
-
+console.log("deneme branch");
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
