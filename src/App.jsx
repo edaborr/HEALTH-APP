@@ -24,11 +24,14 @@ import DoctorPrescriptionsPage from "./pages/doctor/DoctorPrescriptionsPage";
 // Protected Route
 import ProtectedRoute from "./routes/ProtectedRoute";
 import TaskPage from "./pages/doctor/TaskPage";
+import MessagesPage from "./pages/doctor/MessagesPage";
+import { MessageProvider } from "./context/MessageContext";
 
 function App() {
   return (
-    <TaskProvider>
-      <BrowserRouter>
+    <MessageProvider>
+  <TaskProvider>
+    <BrowserRouter>
         <Routes>
 
           {/* LOGIN */}
@@ -36,7 +39,7 @@ function App() {
 
           // ... Diğer importlar ...
 
-// ================= DOKTOR =================
+{/* ================= DOKTOR ================= */}
 <Route
   path="/doctor"
   element={
@@ -49,6 +52,7 @@ function App() {
   <Route path="requests" element={<DoctorRequestsPage />} />
   <Route path="patients" element={<DoctorPatientsPage />} />
   <Route path="prescriptions" element={<DoctorPrescriptionsPage />} />
+  <Route path="messages" element={<MessagesPage />} />
   
   {/* ✅ DOĞRU KULLANIM: Diğer iki satırı silip sadece bunu bırakın */}
   <Route path="profile" element={<DoctorProfilePage />} />
@@ -89,7 +93,8 @@ function App() {
             
         <Toast />
       </BrowserRouter>
-    </TaskProvider>
+  </TaskProvider>
+</MessageProvider>
   );
 }
 

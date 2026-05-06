@@ -18,7 +18,6 @@ const DoctorLayout = () => {
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
 
-  // Menüleri daha profesyonel bir hiyerarşi için gruplara ayırabiliriz
   const menuItems = [
     { name: "Dashboard", path: "/doctor", icon: <LayoutDashboard size={20} /> },
     { name: "Yenileme Talepleri", path: "/doctor/requests", icon: <ClipboardList size={20} /> },
@@ -29,61 +28,174 @@ const DoctorLayout = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-[#F8FAFC] dark:bg-gray-950">
+    <div className="flex h-screen bg-gradient-to-br from-[#F4FBFC] via-[#EFF9FB] to-[#E6F7FA]">
 
-      {/* --- MODERN SIDEBAR --- */}
+      {/* SIDEBAR */}
       <aside
-        className={`${
-          collapsed ? "w-20" : "w-72"
-        } bg-white dark:bg-gray-900 border-r border-slate-100 dark:border-gray-800 p-4 flex flex-col transition-all duration-500 ease-in-out z-50`}
+        className={`
+          ${collapsed ? "w-20" : "w-72"}
+          bg-white/75
+          backdrop-blur-2xl
+          border-r border-white/40
+          shadow-[0_10px_40px_rgba(14,116,144,0.08)]
+          p-4
+          flex
+          flex-col
+          transition-all
+          duration-500
+          ease-in-out
+          z-50
+        `}
       >
 
-        {/* LOGO VE TOGGLE */}
+        {/* LOGO */}
         <div className="flex items-center justify-between mb-10 px-2">
+
           {!collapsed && (
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-gradient-to-br from-[#6FA9B7] to-[#5a8e9b] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#6FA9B7]/20">
+              <div
+                className="
+                  w-10 h-10
+                  rounded-2xl
+                  bg-gradient-to-br
+                  from-[#67C6D3]
+                  to-[#0891B2]
+                  flex
+                  items-center
+                  justify-center
+                  text-white
+                  shadow-[0_10px_25px_rgba(8,145,178,0.35)]
+                "
+              >
                 <span className="font-black text-xs">MT</span>
               </div>
-              <h2 className="text-lg font-black text-slate-800 dark:text-white tracking-tight">
-                MedTrack
-              </h2>
+
+              <div>
+                <h2 className="text-lg font-black text-slate-800 tracking-tight">
+                  MedTrack
+                </h2>
+                <p className="text-[10px] text-slate-400 font-semibold">
+                  Health Management
+                </p>
+              </div>
             </div>
           )}
+
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-xl bg-slate-50 dark:bg-gray-800 text-slate-400 hover:text-[#6FA9B7] transition-colors"
+            className="
+              p-2
+              rounded-2xl
+              bg-white/70
+              text-slate-400
+              hover:text-[#0891B2]
+              hover:bg-[#F4FBFC]
+              transition-all
+              border
+              border-white/40
+            "
           >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            {collapsed ? (
+              <ChevronRight size={18} />
+            ) : (
+              <ChevronLeft size={18} />
+            )}
           </button>
         </div>
 
-        {/* MENÜ LİSTESİ */}
-        <nav className="flex-1 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden scrollbar-hide">
+        {/* MENU */}
+        <nav className="flex-1 flex flex-col gap-2 overflow-y-auto scrollbar-hide">
+
           {menuItems.map((item, index) => (
             <NavLink
               key={index}
               to={item.path}
               end={item.path === "/doctor"}
               className={({ isActive }) =>
-                `group relative flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold text-sm ${
+                `
+                group
+                relative
+                flex
+                items-center
+                gap-3
+                px-4
+                py-3.5
+                rounded-2xl
+                transition-all
+                duration-300
+                font-bold
+                text-sm
+                overflow-hidden
+
+                ${
                   isActive
-                    ? "bg-[#6FA9B7]/10 text-[#6FA9B7]"
-                    : "text-slate-500 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-gray-800"
-                }`
+                    ? `
+                      bg-[#0891B2]/10
+                      text-[#0891B2]
+                      shadow-[0_10px_30px_rgba(8,145,178,0.10)]
+                    `
+                    : `
+                      text-slate-500
+                      hover:bg-[#F4FBFC]
+                      hover:text-slate-700
+                    `
+                }
+              `
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className={`${isActive ? "text-[#6FA9B7]" : "text-slate-400 group-hover:text-slate-600"} transition-colors`}>
+                  {/* ACTIVE BG GLOW */}
+                  {isActive && (
+                    <div
+                      className="
+                        absolute
+                        inset-0
+                        bg-gradient-to-r
+                        from-[#67C6D3]/10
+                        to-transparent
+                        pointer-events-none
+                      "
+                    />
+                  )}
+
+                  {/* ICON */}
+                  <span
+                    className={`
+                      relative z-10 transition-all duration-300
+
+                      ${
+                        isActive
+                          ? "text-[#0891B2]"
+                          : "text-slate-400 group-hover:text-[#0891B2]"
+                      }
+                    `}
+                  >
                     {item.icon}
                   </span>
-                  
-                  {!collapsed && <span className="truncate">{item.name}</span>}
 
-                  {/* Aktiflik Çizgisi */}
+                  {/* TEXT */}
+                  {!collapsed && (
+                    <span className="relative z-10 truncate">
+                      {item.name}
+                    </span>
+                  )}
+
+                  {/* ACTIVE LINE */}
                   {isActive && (
-                    <div className="absolute right-0 w-1 h-6 bg-[#6FA9B7] rounded-l-full shadow-[0_0_8px_#6FA9B7]" />
+                    <div
+                      className="
+                        absolute
+                        right-0
+                        w-1
+                        h-7
+                        rounded-l-full
+                        bg-gradient-to-b
+                        from-[#67C6D3]
+                        to-[#0891B2]
+                        shadow-[0_0_12px_#0891B2]
+                      "
+                    />
                   )}
                 </>
               )}
@@ -91,48 +203,97 @@ const DoctorLayout = () => {
           ))}
         </nav>
 
-        {/* ALT KISIM (PROFİL & ÇIKIŞ) */}
-        <div className="pt-4 mt-4 border-t border-slate-50 dark:border-gray-800 space-y-4">
-          
+        {/* ALT PROFIL */}
+        <div className="pt-4 mt-4 border-t border-white/30 space-y-4">
+
           {!collapsed && (
-            <div className="bg-slate-50 dark:bg-gray-800/50 rounded-2xl p-3 flex items-center gap-3 border border-slate-100 dark:border-gray-800">
-              <div className="w-10 h-10 rounded-xl bg-white dark:bg-gray-700 flex items-center justify-center text-[#6FA9B7] font-black border border-slate-200 dark:border-gray-600 shadow-sm">
-                {user?.name?.charAt(0) || 'D'}
+            <div
+              className="
+                bg-white/60
+                backdrop-blur-xl
+                rounded-3xl
+                p-4
+                flex
+                items-center
+                gap-3
+                border
+                border-white/40
+                shadow-[0_10px_30px_rgba(14,116,144,0.06)]
+              "
+            >
+              <div
+                className="
+                  w-11 h-11
+                  rounded-2xl
+                  bg-gradient-to-br
+                  from-[#67C6D3]
+                  to-[#0891B2]
+                  flex
+                  items-center
+                  justify-center
+                  text-white
+                  font-black
+                  shadow-lg
+                "
+              >
+                {user?.name?.charAt(0) || "D"}
               </div>
+
               <div className="flex-1 overflow-hidden">
-                <p className="text-xs font-black text-slate-800 dark:text-white truncate uppercase">
-                   Dr. {user?.name || "Ahmet"}
+                <p className="text-xs font-black text-slate-800 truncate">
+                  Dr. {user?.name || "Ahmet"}
                 </p>
-                <p className="text-[10px] font-bold text-[#6FA9B7] uppercase tracking-wider">Aile Hekimi</p>
+
+                <p className="text-[11px] font-semibold text-[#0891B2] truncate">
+                  Aile Hekimi
+                </p>
               </div>
             </div>
           )}
 
+          {/* LOGOUT */}
           <button
             onClick={logout}
-            className={`flex items-center gap-3 w-full p-4 rounded-2xl transition-all duration-300 font-bold text-sm ${
-              collapsed 
-                ? "justify-center text-rose-500 hover:bg-rose-50" 
-                : "text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10"
-            }`}
+            className={`
+              w-full
+              flex
+              items-center
+              gap-3
+              p-4
+              rounded-2xl
+              font-bold
+              text-sm
+              transition-all
+              duration-300
+
+              ${
+                collapsed
+                  ? "justify-center"
+                  : ""
+              }
+
+              text-rose-500
+              hover:bg-rose-50
+            `}
           >
             <LogOut size={20} />
+
             {!collapsed && <span>Oturumu Kapat</span>}
           </button>
 
         </div>
       </aside>
 
-      {/* --- ANA İÇERİK ALANI --- */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Opsiyonel: Header (Üst Bar) eklemek istersen buraya gelebilir */}
-        <div className="flex-1 p-8 overflow-y-auto bg-[#F8FAFC] dark:bg-gray-950">
-           <div className="max-w-7xl mx-auto">
-              <Outlet />
-           </div>
-        </div>
-      </main>
+      {/* MAIN */}
+      <main className="flex-1 overflow-hidden">
 
+        <div className="h-full overflow-y-auto p-8">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
+        </div>
+
+      </main>
     </div>
   );
 };
