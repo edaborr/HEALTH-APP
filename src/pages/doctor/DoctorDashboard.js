@@ -1,196 +1,196 @@
-import { useRequests } from "../../context/RequestContext";
-import { useAuth } from "../../context/AuthContext";
-import { useState, useMemo } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import { useTasks } from "../../context/TaskContext";
+import React from 'react';
 import { 
-  Bell, Activity, CheckCircle, Search, 
-  ArrowUpRight, AlertCircle, Coffee, Plus
-} from "lucide-react";
-import { 
-  AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, RadialBarChart, RadialBar,CartesianGrid
-} from "recharts";
+  CheckCircle2, MessageSquare, BookOpen, Activity, 
+  Search, Bell, MoreVertical, Plus, Calendar as CalendarIcon,
+  Users, ClipboardList, TrendingUp
+} from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const DoctorDashboard = () => {
-  const { requests } = useRequests();
-  const { user } = useAuth();
-  const { tasks } = useTasks();
-  const [date, setDate] = useState(new Date());
+const istatistikVeri = [
+  { ay: 'Oca', randevu: 25, acil: 45 }, { ay: 'Şub', randevu: 45, acil: 35 },
+  { ay: 'Mar', randevu: 65, acil: 55 }, { ay: 'Nis', randevu: 40, acil: 20 },
+  { ay: 'May', randevu: 60, acil: 40 },
+];
 
-  const approved = requests.filter((r) => r.status === "approved").length;
-  const pendingRequests = requests.filter(r => r.status === 'pending');
-
-  const patientData = [
-    { name: 'Kronik', value: 400, color: '#6FA9B7' },
-    { name: 'Çocuk', value: 300, color: '#A2D2DF' },
-    { name: 'Genel', value: 300, color: '#D1E9F6' },
-  ];
-
-  const workloadData = [{ name: 'L', value: 85, fill: '#6FA9B7' }];
-
-  const chartData = [
-    { name: "Pzt", requests: 32 }, { name: "Sal", requests: 45 },
-    { name: "Çar", requests: 38 }, { name: "Per", requests: 51 }, { name: "Cum", requests: 46 },
-  ];
-
+const DoktorDashboard = () => {
   return (
-    <div className="max-w-[1600px] mx-auto space-y-8 pb-10">
+    <div className="p-6 bg-[#E0F2F1] min-h-screen space-y-6 font-sans">
       
-      {/* 🔝 ÜST NAVİGASYON */}
-      <div className="flex justify-between items-center px-2">
-        <div className="flex items-center gap-6">
-           <h1 className="text-2xl font-bold text-gray-800">Genel Bakış</h1>
-           <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <input type="text" placeholder="Hasta ara..." className="pl-10 pr-4 py-2 bg-white rounded-xl border border-gray-100 shadow-sm focus:ring-2 focus:ring-[#6FA9B7] outline-none text-sm w-64"/>
-           </div>
+      {/* ÜST BİLGİ ÇUBUĞU */}
+      <div className="flex justify-between items-center bg-white/80 backdrop-blur-md p-3 rounded-2xl shadow-sm border border-[#B2DFDB]">
+        <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-xl w-96 border border-[#B2DFDB]">
+          <Search size={18} className="text-[#00796B]" />
+          <input type="text" placeholder="Hasta veya rapor ara..." className="bg-transparent outline-none text-sm w-full" />
         </div>
         <div className="flex items-center gap-4">
-          <div className="relative p-2 bg-white rounded-xl shadow-sm border border-gray-50">
-            <Bell size={20} className="text-gray-600"/>
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-          </div>
-          <div className="flex items-center gap-3 bg-white p-1.5 pr-4 rounded-xl shadow-sm border border-gray-50">
-            <div className="w-8 h-8 bg-[#6FA9B7] rounded-lg flex items-center justify-center text-white font-bold text-xs">DR</div>
-            <div>
-              <p className="text-xs font-bold text-gray-800">{user?.name}</p>
-              <p className="text-[10px] text-[#6FA9B7] font-medium tracking-wider">Aile Hekimi</p>
+          <button className="p-2.5 bg-white text-[#00796B] rounded-xl hover:bg-[#B2DFDB] transition-all relative border border-[#B2DFDB]">
+            <Bell size={20} />
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+          </button>
+          <div className="flex items-center gap-3 pl-4 border-l border-[#B2DFDB]">
+            <div className="text-right">
+              <p className="text-xs font-black text-[#004D40] uppercase">Dr. Ahmet Yılmaz</p>
+              <p className="text-[10px] font-bold text-[#00796B] uppercase tracking-tighter">Görevde • Aile Hekimi</p>
             </div>
+            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop" className="w-10 h-10 rounded-xl object-cover shadow-md border-2 border-[#B2DFDB]" alt="Doktor" />
           </div>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-12 gap-8">
+      <h1 className="text-3xl font-black text-[#004D40] tracking-tight px-2">Hoş Geldiniz, Dr. Ahmet!</h1>
+
+      {/* ANA PANEL YERLEŞİMİ */}
+      <div className="grid grid-cols-12 gap-6">
         
-        {/* ANA İÇERİK (SOL) */}
-        <div className="lg:col-span-8 space-y-8">
+        {/* SOL KOLON: GÖREVLER VE TAKVİM */}
+        <div className="col-span-12 lg:col-span-4 space-y-6">
           
-          {/* 🌊 HERO PANEL (V1'in görseli + V2'nin içeriği) */}
-          <div className="bg-[#6FA9B7] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-[#6FA9B7]/20 min-h-[320px] flex items-center">
-            <div className="relative z-10 w-full md:w-3/5">
-              <span className="bg-white/20 px-3 py-1 rounded-full text-[10px] font-semibold mb-4 inline-block backdrop-blur-sm uppercase tracking-widest">Sistem Yayında</span>
-              <h2 className="text-4xl font-bold mb-4 leading-tight">İyi Günler, <br/> Dr. {user?.name.split(" ")[0]}</h2>
-              
-              {/* Kritik Uyarı Modülü */}
-              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 mb-8 inline-flex items-center gap-3">
-                <AlertCircle size={18} className="text-yellow-200" />
-                <p className="text-xs font-medium">3 Hastanın reçete süresi dolmak üzere. <span className="underline ml-2 cursor-pointer">Kontrol et</span></p>
-              </div>
-
-              <div className="flex gap-4">
-                <button className="bg-white text-[#6FA9B7] px-6 py-3 rounded-2xl font-bold text-sm hover:shadow-lg transition-all flex items-center gap-2">
-                  <Plus size={18}/> Yeni Reçete Oluştur
-                </button>
-              </div>
+          {/* GÖREVLER KARTI */}
+          <div className="bg-[#00796B] rounded-[32px] p-6 text-white shadow-xl shadow-[#00796B]/20 relative overflow-hidden">
+            <div className="flex justify-between items-center mb-6 relative z-10">
+              <h3 className="font-black text-lg flex items-center gap-2">Bekleyen Görevler <span className="bg-white/20 px-2 py-0.5 rounded-lg text-xs">12</span></h3>
+              <button className="text-[10px] font-black uppercase opacity-80 hover:opacity-100 underline tracking-widest">TÜMÜNÜ GÖR</button>
             </div>
-            
-            {/* V1'deki Doktor Görseli */}
-            <div className="absolute right-0 bottom-0 h-full w-1/2 hidden md:block">
-               <div className="absolute inset-0 bg-gradient-to-r from-[#6FA9B7] via-transparent to-transparent z-10"></div>
-               <img 
-                 src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=1000&auto=format&fit=crop" 
-                 className="w-full h-full object-cover mix-blend-luminosity opacity-40 transform scale-110" 
-                 alt="doctor" 
-               />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* GRAFİK (V1 Stili) */}
-            <div className="bg-white rounded-[2.5rem] p-7 shadow-sm border border-gray-50">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-gray-800">Haftalık Akış</h3>
-                <span className="text-[10px] bg-green-50 text-green-600 px-2 py-1 rounded-lg font-bold">+12.5%</span>
-              </div>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient id="colorReq" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6FA9B7" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#6FA9B7" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10}} />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="requests" stroke="#6FA9B7" strokeWidth={3} fill="url(#colorReq)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* HASTA PROFİLİ (V2 Analitik) */}
-            <div className="bg-white rounded-[2.5rem] p-7 shadow-sm border border-gray-50">
-               <h3 className="font-bold text-gray-800 mb-4">Hasta Demografisi</h3>
-               <div className="h-40">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={patientData} innerRadius={45} outerRadius={65} paddingAngle={8} dataKey="value">
-                      {patientData.map((entry, index) => <Cell key={index} fill={entry.color} cornerRadius={10} />)}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex justify-between mt-4 px-2">
-                {patientData.map(d => (
-                  <div key={d.name} className="flex flex-col items-center">
-                    <div className="w-2 h-2 rounded-full mb-1" style={{backgroundColor: d.color}}></div>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase">{d.name}</p>
+            <div className="space-y-3 relative z-10">
+              {[
+                { baslik: "Hasta Viziti", saat: "16:00", kod: "V", renk: "bg-[#4DB6AC]" },
+                { baslik: "Laboratuvar Sonuçları", saat: "14:00", kod: "L", renk: "bg-[#80CBC4]" },
+                { baslik: "Reçete Onayları", saat: "09:00", kod: "R", renk: "bg-[#26A69A]" }
+              ].map((gorev, i) => (
+                <div key={i} className="bg-white rounded-2xl p-4 flex items-center gap-4 group cursor-pointer hover:bg-[#E0F2F1] transition-all">
+                  <div className={`w-10 h-10 ${gorev.renk} rounded-xl flex items-center justify-center font-black text-white text-sm shadow-sm`}>{gorev.kod}</div>
+                  <div className="flex-1">
+                    <p className="text-[#004D40] font-black text-sm">{gorev.baslik}</p>
+                    <p className="text-[#00796B]/60 text-[10px] font-bold uppercase tracking-tighter">{gorev.saat}</p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* SAĞ PANEL */}
-        <div className="lg:col-span-4 space-y-8">
-          
-          {/* YOĞUNLUK GÖSTERGESİ (V2 Modern) */}
-          <div className="bg-white p-7 rounded-[2.5rem] shadow-sm border border-gray-50 text-center relative overflow-hidden">
-             <h3 className="font-bold text-gray-800 mb-2">Günlük Kapasite</h3>
-             <div className="h-32 flex justify-center items-center">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadialBarChart cx="50%" cy="50%" innerRadius="70%" outerRadius="100%" barSize={8} data={workloadData} startAngle={180} endAngle={0}>
-                    <RadialBar background dataKey="value" cornerRadius={10} />
-                  </RadialBarChart>
-                </ResponsiveContainer>
-                <div className="absolute top-[60%] left-1/2 -translate-x-1/2">
-                   <p className="text-2xl font-black text-gray-800">%85</p>
-                   <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Yoğunluk</p>
+                  <MoreVertical size={16} className="text-[#B2DFDB] group-hover:text-[#00796B]" />
                 </div>
-             </div>
-             <div className="mt-4 flex items-center gap-2 justify-center bg-[#6FA9B7]/5 p-2 rounded-xl">
-                <Coffee size={14} className="text-[#6FA9B7]" />
-                <p className="text-[11px] text-[#6FA9B7] font-bold uppercase">Mola Zamanı: 15:30</p>
-             </div>
+              ))}
+            </div>
+            <Activity className="absolute -right-10 -bottom-10 w-48 h-48 text-white/5 rotate-12" />
           </div>
 
           {/* TAKVİM */}
-          <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-50">
-             <Calendar onChange={setDate} value={date} className="!border-none !w-full custom-calendar" />
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-[#B2DFDB]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-black text-[#004D40]">Çalışma Takvimi</h3>
+              <div className="flex gap-2">
+                <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#E0F2F1] text-[#00796B]">‹</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#E0F2F1] text-[#00796B]">›</button>
+              </div>
+            </div>
+            <div className="grid grid-cols-7 gap-y-2 text-center">
+              {['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'].map(d => <span key={d} className="text-[10px] font-black text-[#B2DFDB] uppercase">{d}</span>)}
+              {[...Array(30)].map((_, i) => (
+                <span key={i} className={`text-xs font-bold p-2 cursor-pointer transition-all ${i+1 === 6 ? 'bg-[#00796B] text-white rounded-xl shadow-lg' : 'text-[#004D40] hover:bg-[#E0F2F1]'}`}>{i+1}</span>
+              ))}
+            </div>
           </div>
-
-          {/* SİSTEM NOTU (V1 Tasarımı) */}
-          <div className="bg-gray-900 p-6 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden">
-             <div className="relative z-10">
-               <div className="flex items-center gap-2 mb-2">
-                 <CheckCircle size={14} className="text-[#6FA9B7]" />
-                 <p className="text-[10px] text-[#6FA9B7] font-bold uppercase">Sistem Notu</p>
-               </div>
-               <p className="text-xs font-medium leading-relaxed italic text-gray-300">"Eczane entegrasyonu başarıyla güncellendi. Tüm stok verileri anlık olarak çekiliyor."</p>
-             </div>
-             <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-[#6FA9B7]/10 rounded-full blur-3xl"></div>
-          </div>
-
         </div>
+
+        {/* ORTA KOLON: MESAJLAR VE GÜNCEL OKUMALAR */}
+        <div className="col-span-12 lg:col-span-4 space-y-6">
+          
+          {/* MESAJLAŞMA */}
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-[#B2DFDB] h-[400px] flex flex-col">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-black text-[#004D40]">Son Mesajlar</h3>
+              <button className="p-2 bg-[#E0F2F1] text-[#00796B] rounded-xl hover:bg-[#B2DFDB] transition-all"><Plus size={18} /></button>
+            </div>
+            <div className="space-y-4 overflow-y-auto pr-2 scrollbar-hide flex-1">
+              {[
+                { ad: "Hemşire Elif", mesaj: "204 nolu hasta stabil.", saat: "16:45" },
+                { ad: "Dr. Selin Demir", mesaj: "Konsültasyon raporu hazır.", saat: "15:20" },
+                { ad: "Ecz. Murat", mesaj: "İlaç stok güncellemesi hakkında...", saat: "14:10" }
+              ].map((m, i) => (
+                <div key={i} className="flex items-center gap-3 p-3 hover:bg-[#E0F2F1]/50 rounded-2xl transition-all cursor-pointer border-b border-[#F5F5F5] last:border-none">
+                  <div className="w-11 h-11 rounded-xl bg-[#B2DFDB] border-2 border-white shadow-sm overflow-hidden flex items-center justify-center text-[#00796B] font-black">
+                    {m.ad[0]}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <p className="text-sm font-black text-[#004D40]">{m.ad}</p>
+                      <span className="text-[9px] font-bold text-[#00796B]/50">{m.saat}</span>
+                    </div>
+                    <p className="text-[11px] text-[#00796B] truncate italic">"{m.mesaj}"</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* GÜNLÜK OKUMA (Görseldeki Makale Bölümü) */}
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-[#B2DFDB] space-y-4 group cursor-pointer">
+             <div className="flex items-center gap-2 text-[#00796B]">
+               <BookOpen size={18} />
+               <h3 className="font-black text-[#004D40]">Tıbbi Makaleler</h3>
+             </div>
+             <div className="relative h-40 rounded-2xl overflow-hidden shadow-inner">
+               <img src="https://images.unsplash.com/photo-1576091160550-2173bc999565?w=500" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="medical" />
+               <div className="absolute inset-0 bg-gradient-to-t from-[#004D40]/90 to-transparent flex items-end p-4">
+                 <p className="text-white text-xs font-bold leading-snug">Yeni nesil antibiyotik kullanımında dikkat edilmesi gerekenler.</p>
+               </div>
+             </div>
+          </div>
+        </div>
+
+        {/* SAĞ KOLON: İSTATİSTİKLER VE HASTA SAYILARI */}
+        <div className="col-span-12 lg:col-span-4 space-y-6">
+          
+          {/* VERİ ANALİZİ */}
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-[#B2DFDB]">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-black text-[#004D40]">İstatistikler</h3>
+              <select className="text-[10px] font-black border-none outline-none bg-[#E0F2F1] p-1.5 rounded-lg text-[#00796B]">
+                <option>Son 6 Ay</option>
+              </select>
+            </div>
+            <div className="h-48 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={istatistikVeri}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0F2F1" />
+                  <XAxis dataKey="ay" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#80CBC4'}} />
+                  <Tooltip contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} />
+                  <Line type="monotone" dataKey="acil" stroke="#00796B" strokeWidth={4} dot={{r: 4, fill: '#00796B', strokeWidth: 2, stroke: '#fff'}} />
+                  <Line type="monotone" dataKey="randevu" stroke="#4DB6AC" strokeWidth={4} dot={{r: 4, fill: '#4DB6AC', strokeWidth: 2, stroke: '#fff'}} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-center gap-6 mt-4">
+               <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 bg-[#00796B] rounded-full"></span> <span className="text-[10px] font-black text-[#80CBC4] uppercase tracking-widest">Acil Giriş</span></div>
+               <div className="flex items-center gap-2"><span className="w-2.5 h-2.5 bg-[#4DB6AC] rounded-full"></span> <span className="text-[10px] font-black text-[#80CBC4] uppercase tracking-widest">Randevulu</span></div>
+            </div>
+          </div>
+
+          {/* ÖZET KARTLARI */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-[#00796B] rounded-[28px] p-5 text-white shadow-lg shadow-[#00796B]/20 flex flex-col justify-between h-40">
+              <div className="flex justify-between items-start">
+                <p className="text-[10px] font-black uppercase opacity-80 leading-tight">Yeni<br/>Kayıtlar</p>
+                <Users size={18} className="opacity-50" />
+              </div>
+              <div>
+                <h4 className="text-2xl font-black mb-1">40</h4>
+                <p className="text-[10px] font-bold bg-white/20 w-fit px-2 py-0.5 rounded-full">%51 Artış</p>
+              </div>
+            </div>
+
+            <div className="bg-[#80CBC4] rounded-[28px] p-5 text-white shadow-lg shadow-[#80CBC4]/20 flex flex-col justify-between h-40">
+              <div className="flex justify-between items-start">
+                <p className="text-[10px] font-black uppercase opacity-80 leading-tight">Kronik<br/>Hastalar</p>
+                <ClipboardList size={18} className="opacity-50" />
+              </div>
+              <div>
+                <h4 className="text-2xl font-black mb-1">22</h4>
+                <p className="text-[10px] font-bold bg-white/20 w-fit px-2 py-0.5 rounded-full">%32 Takip</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
 };
 
-export default DoctorDashboard;
+export default DoktorDashboard;
