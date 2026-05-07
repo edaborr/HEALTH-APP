@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BookOpen,
   Activity,
@@ -10,6 +10,9 @@ import {
   Users,
   ClipboardList,
 } from "lucide-react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { getMedicalNews } from "../../services/newsService";
 
 import {
   LineChart,
@@ -34,7 +37,29 @@ const DoctorDashboard = () => {
   const { tasks } = useTasks();
   const navigate = useNavigate();
   const [showMessageModal, setShowMessageModal] = useState(false);
+  const [articles, setArticles] = useState([
+  {
+    title:
+      "Yeni nesil antibiyotik kullanımında dikkat edilmesi gerekenler",
 
+    image:
+      "https://images.unsplash.com/photo-1576091160550-2173dba999ef",
+  },
+]);
+        useEffect(() => {
+
+        const fetchNews = async () => {
+
+          const data = await getMedicalNews();
+          console.log(data);
+          if (data?.length > 0) {
+            setArticles(data);
+          }
+        };
+
+        fetchNews();
+
+      }, []);
   const [newMessage, setNewMessage] = useState({
     name: "",
     message: "",
@@ -44,7 +69,8 @@ const DoctorDashboard = () => {
   const bekleyenTasks = tasks.filter(
     (task) => task.status === "Bekleyenler"
   );
-
+const [date, setDate] = useState(new Date());
+const [searchTerm, setSearchTerm] = useState("");
   return (
     <>
       <div className="space-y-6 font-sans">
@@ -56,7 +82,7 @@ const DoctorDashboard = () => {
             items-center
             bg-white/65
             backdrop-blur-2xl
-            p-4
+            px-6 py-3
             rounded-[32px]
             border
             border-white/40
@@ -80,6 +106,8 @@ const DoctorDashboard = () => {
           >
             <Search size={18} className="text-[#0891B2]" />
             <input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               type="text"
               placeholder="Hasta veya rapor ara..."
               className="
@@ -166,32 +194,115 @@ const DoctorDashboard = () => {
               />
             </button>
 
-            {/* PROFILE */}
             <div className="flex items-center gap-3 pl-4 border-l border-white/40">
-              <div className="text-right">
-                <p className="text-xs font-black text-slate-800 uppercase">
-                  Dr. Ahmet Yılmaz
-                </p>
-                <p className="text-[11px] font-semibold text-[#0891B2]">
-                  Görevde • Aile Hekimi
-                </p>
-              </div>
-              <img
-                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop"
-                alt="doctor"
-                className="
-                  w-11
-                  h-11
-                  rounded-2xl
-                  object-cover
-                  border-2
-                  border-white
-                  shadow-lg
-                "
-              />
-            </div>
-          </div>
+
+  <div className="text-right">
+    <p className="text-xs font-black text-slate-800 uppercase">
+      DR. AHMET YILMAZ
+    </p>
+
+    <p className="text-[11px] font-semibold text-[#0891B2]">
+      Görevde • Aile Hekimi
+    </p>
+  </div>
+
+  <label className="cursor-pointer">
+
+    <input
+      type="file"
+      accept="image/*"
+      className="hidden"
+      onChange={(e) => {
+
+        const file = e.target.files[0];
+
+        if (file) {
+
+          const imageUrl = URL.createObjectURL(file);
+
+          document.getElementById("doctor-avatar").src =
+            imageUrl;
+        }
+      }}
+    />
+
+    <img
+      id="doctor-avatar"
+      
+      
+      className="
+        w-14
+        h-14
+        rounded-2xl
+        object-cover
+        border-2
+        border-white
+        shadow-lg
+        hover:scale-105
+        transition-all
+      "
+    />
+
+  </label>
+
+</div>
+</div>
+</div>
+        {searchTerm && (
+  <div
+    className="
+      absolute
+      top-24
+      left-10
+      w-[420px]
+      bg-white
+      rounded-3xl
+      shadow-2xl
+      border
+      border-[#DCEFF3]
+      p-4
+      z-50
+    "
+  >
+
+    <p className="text-xs font-bold text-slate-400 mb-3">
+      Arama Sonuçları
+    </p>
+
+    {messages
+      .filter((m) =>
+        m.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .map((m, i) => (
+
+        <div
+          key={i}
+          className="
+            p-3
+            rounded-2xl
+            hover:bg-[#F4FBFC]
+            cursor-pointer
+            transition-all
+          "
+        >
+
+          <p className="font-bold text-slate-700">
+            {m.name}
+          </p>
+
+          <p className="text-sm text-[#0891B2] truncate">
+            {
+              m.conversation?.[
+                m.conversation.length - 1
+              ]?.text
+            }
+          </p>
+
         </div>
+      ))}
+
+  </div>
+)}
 
         {/* TITLE */}
         <div className="px-2">
@@ -335,8 +446,8 @@ const DoctorDashboard = () => {
               className="
                 bg-white/70
                 backdrop-blur-xl
-                rounded-[32px]
-                p-6
+                rounded-[28px]
+                p-5
                 border
                 border-white/40
                 shadow-[0_10px_30px_rgba(14,116,144,0.06)]
@@ -345,79 +456,82 @@ const DoctorDashboard = () => {
                 hover:-translate-y-1
               "
             >
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-black text-slate-800 text-xl">
-                  Çalışma Takvimi
-                </h3>
-                <div className="flex gap-2">
-                  <button
-                    className="
-                      w-9
-                      h-9
-                      rounded-xl
-                      bg-[#F4FBFC]
-                      hover:bg-[#E0F7FA]
-                      text-[#0891B2]
-                      transition-all
-                    "
-                  >
-                    ‹
-                  </button>
-                  <button
-                    className="
-                      w-9
-                      h-9
-                      rounded-xl
-                      bg-[#F4FBFC]
-                      hover:bg-[#E0F7FA]
-                      text-[#0891B2]
-                      transition-all
-                    "
-                  >
-                    ›
-                  </button>
-                </div>
-              </div>
+             <div className="flex justify-between items-center mb-6">
 
-              <div className="grid grid-cols-7 gap-y-3 text-center">
-                {["Pz", "Pt", "Sa", "Ça", "Pe", "Cu", "Ct"].map((d) => (
-                  <span
-                    key={d}
-                    className="text-[11px] font-bold text-slate-400"
-                  >
-                    {d}
-                  </span>
-                ))}
-                {[...Array(30)].map((_, i) => (
-                  <span
-                    key={i}
-                    className={`
-                      text-sm
-                      font-bold
-                      p-3
-                      cursor-pointer
-                      transition-all
-                      rounded-2xl
-                      ${
-                        i + 1 === 6
-                          ? `
-                            bg-gradient-to-br
-                            from-[#0891B2]
-                            to-[#0E7490]
-                            text-white
-                            shadow-lg
-                          `
-                          : `
-                            text-slate-700
-                            hover:bg-[#F4FBFC]
-                          `
-                      }
-                    `}
-                  >
-                    {i + 1}
-                  </span>
-                ))}
-              </div>
+  <div>
+    <h3 className="font-black text-slate-800 text-xl">
+      Çalışma Takvimi
+    </h3>
+
+    <p className="text-slate-400 text-sm mt-1">
+      Yaklaşan görev ve randevular
+    </p>
+  </div>
+
+  <div className="flex gap-2">
+
+    <button
+      onClick={() =>
+        setDate(
+          new Date(
+            date.getFullYear(),
+            date.getMonth() - 1,
+            1
+          )
+        )
+      }
+      className="
+        w-10
+        h-10
+        rounded-2xl
+        bg-[#F4FBFC]
+        hover:bg-[#E0F7FA]
+        text-[#0891B2]
+        transition-all
+        font-bold
+      "
+    >
+      ‹
+    </button>
+
+    <button
+      onClick={() =>
+        setDate(
+          new Date(
+            date.getFullYear(),
+            date.getMonth() + 1,
+            1
+          )
+        )
+      }
+      className="
+        w-10
+        h-10
+        rounded-2xl
+        bg-[#F4FBFC]
+        hover:bg-[#E0F7FA]
+        text-[#0891B2]
+        transition-all
+        font-bold
+      "
+    >
+      ›
+    </button>
+
+  </div>
+</div>
+
+              <div className="mt-2 custom-calendar">
+  <Calendar
+    onChange={setDate}
+    value={date}
+    locale="tr-TR"
+    prevLabel="‹"
+    nextLabel="›"
+    
+  />
+</div>
+                
             </div>
           </div>
 
@@ -481,21 +595,24 @@ const DoctorDashboard = () => {
                     "
                   >
                     <div
-                      className="
-                        w-12
-                        h-12
-                        rounded-2xl
-                        bg-gradient-to-br
-                        from-[#67C6D3]
-                        to-[#0891B2]
-                        flex
-                        items-center
-                        justify-center
-                        text-white
-                        font-black
-                        shadow-lg
-                      "
-                    >
+  className="
+    flex
+    items-center
+    justify-center
+    min-w-[48px]
+    min-h-[48px]
+    w-12
+    h-12
+    rounded-2xl
+    bg-gradient-to-br
+    from-[#67C6D3]
+    to-[#0891B2]
+    text-white
+    font-black
+    shadow-lg
+  "
+>
+
                       {m.name?.[0]}
                     </div>
                     <div className="flex-1">
@@ -508,7 +625,11 @@ const DoctorDashboard = () => {
                         </span>
                       </div>
                       <p className="text-xs text-[#0891B2] italic mt-1 truncate">
-                        "{m.message}"
+                        "{
+                              m.conversation?.[
+                                m.conversation.length - 1
+                              ]?.text
+                            }"
                       </p>
                     </div>
                   </div>
@@ -540,37 +661,67 @@ const DoctorDashboard = () => {
                   Tıbbi Makaleler
                 </h3>
               </div>
-              <div className="relative h-52 rounded-[28px] overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1576091160550-2173bc999565?w=500"
-                  alt="medical"
-                  className="
-                    w-full
-                    h-full
-                    object-cover
-                    transition-transform
-                    duration-500
-                    group-hover:scale-105
-                  "
-                />
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    bg-gradient-to-t
-                    from-[#0E7490]/90
-                    via-[#0891B2]/30
-                    to-transparent
-                    flex
-                    items-end
-                    p-5
-                  "
-                >
-                  <p className="text-white text-sm font-bold leading-relaxed">
-                    Yeni nesil antibiyotik kullanımında dikkat edilmesi gerekenler.
-                  </p>
-                </div>
-              </div>
+                {articles?.length > 0 && (
+
+  <a
+    href={articles?.[0]?.url}
+    target="_blank"
+    rel="noreferrer"
+    className="
+      relative
+      overflow-hidden
+      rounded-[28px]
+      h-52
+      group
+      cursor-pointer
+      block
+    "
+  >
+
+    <img
+      src={
+        articles?.[0]?.image ||
+        "https://images.unsplash.com/photo-1576091160550-2173dba999ef"
+      }
+      alt="medical"
+      className="
+        w-full
+        h-full
+        object-cover
+        transition-transform
+        duration-500
+        group-hover:scale-105
+      "
+    />
+
+    <div
+      className="
+        absolute
+        inset-0
+        bg-gradient-to-t
+        from-[#0E7490]/90
+        via-[#0891B2]/30
+        to-transparent
+        flex
+        items-end
+        p-5
+      "
+    >
+
+      <div>
+        <p className="text-white text-sm font-bold leading-relaxed">
+          {articles?.[0]?.title}
+        </p>
+
+        <p className="text-cyan-100 text-xs mt-2">
+          Haberi okumak için tıkla
+        </p>
+      </div>
+
+    </div>
+
+  </a>
+)}
             </div>
           </div>
 
@@ -854,8 +1005,19 @@ const DoctorDashboard = () => {
     msg.name === newMessage.name
       ? {
           ...msg,
-          message: newMessage.message,
+
           time: "Şimdi",
+
+          lastMessage: newMessage.message,
+
+          conversation: [
+            ...msg.conversation,
+
+            {
+              sender: "me",
+              text: newMessage.message,
+            },
+          ],
         }
       : msg
   )

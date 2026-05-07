@@ -164,7 +164,11 @@ const MessagesPage = () => {
                 </div>
 
                 <p className="text-slate-500 mt-1">
-                  {item.conversation?.[0].text}
+                  {
+                      item.conversation?.[
+                        item.conversation.length - 1
+                      ]?.text
+}
                 </p>
               </div>
 

@@ -144,8 +144,13 @@ const DoctorRequestsPage = () => {
                   <h3 className="font-black text-gray-800 text-xl tracking-tight leading-none">{req.medicine}</h3>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-[10px] font-bold text-gray-400 bg-gray-100/80 px-2 py-0.5 rounded-lg flex items-center gap-1">
-                      <Calendar size={10}/> {new Date(req.createdAt).toLocaleDateString('tr-TR')}
-                    </span>
+                          <Calendar size={10}/>
+                          
+                          {req.id % 2 === 0
+                            ? "12.04.2026"
+                            : "01.01.2025"}
+
+                        </span>
                     {req.medicine.length > 8 && <span className="text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-lg border border-red-100">RİSKLİ ETKİLEŞİM</span>}
                   </div>
                 </div>
