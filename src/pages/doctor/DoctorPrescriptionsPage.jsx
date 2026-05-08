@@ -21,7 +21,7 @@ const DoctorPrescriptionsPage = () => {
   const dateFilters = ["Son 7 Gün", "Son 1 Ay", "Son 1 Yıl", "Tümü"];
 
   const prescriptions = requests
-    .filter(req => req.status === 'approved')
+  .filter(req => req.status === 'delivered')
     .map(req => {
       const patientDetail = patients.find(p => p.name === req.patientName);
       const medDetail = commonMeds.find(m => m.name === req.medicine);

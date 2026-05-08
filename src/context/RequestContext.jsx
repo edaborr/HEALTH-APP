@@ -31,6 +31,36 @@ export const RequestProvider = ({ children }) => {
     const newRequest = {
       id: Date.now(),
       medicine,
+      usageHistory: [
+  {
+    date: "01.04.2026",
+    amount: "28 Tablet",
+  },
+  {
+    date: "02.03.2026",
+    amount: "28 Tablet",
+  },
+],
+  age: user.age,
+  gender: user.gender,
+  diagnosis: user.diagnosis,
+  allergies: user.allergies || [],
+  bloodType: user.bloodType,
+  chronicMeds: user.chronicMeds || [],
+
+  
+
+  warning:
+    user.allergies?.length > 0
+      ? `${user.allergies.join(", ")} alerjisi mevcut.`
+      : user.age > 60
+      ? "İleri yaş hasta. Doz kontrolü önerilir."
+      : "",
+
+
+
+patientNote:
+  "İlacım bitti, rapor yazabilir misiniz?",
       patientEmail: user.email,
       patientName: user.name,
       status: "pending",

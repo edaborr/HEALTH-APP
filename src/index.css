@@ -206,3 +206,27 @@ html.dark {
 .custom-calendar .react-calendar__month-view__days__day--weekend {
   color: #0f172a;
 }
+@media print {
+  /* Sayfadaki her şeyi gizle */
+  body * {
+    visibility: hidden;
+  }
+  /* Sadece modal ve içindekileri göster */
+  .fixed.inset-0.z-\[999\], 
+  .fixed.inset-0.z-\[999\] * {
+    visibility: visible;
+  }
+  /* Modalı sayfanın en başına daya */
+  .fixed.inset-0.z-\[999\] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  @media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+}
