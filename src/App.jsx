@@ -1,94 +1,96 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Toast from "./context/Toast";
 import Login from "./pages/Login";
-import DoctorPatientsPage from "./pages/doctor/DoctorPatientsPage";
 import { TaskProvider } from "./context/TaskContext";
-import DoctorProfilePage from "./pages/doctor/DoctorProfilePage";
+import { HealthProvider } from "./context/HealthContext"; 
 
-// Layouts
+// Layoutlar (Gezginindeki Layouts klasörüyle uyumlu)
 import DoctorLayout from "./layouts/DoctorLayout";
 import PatientLayout from "./layouts/PatientLayout";
 import PharmacyLayout from "./layouts/PharmacyLayout";
 
-// Pages
-import DoctorDashboard from "./pages/doctor/DoctorDashboard";
-import PatientDashboard from "./pages/patient/PatientDashboard";
+// Sayfalar - HASTA (Gezginindeki harf duyarlılığına göre düzenlendi)
+import PatientDashboard from "./pages/patient/PatientDashboard"; 
+import HealthTracking from "./pages/patient/HealthTracking"; 
+import HistoryPage from "./pages/patient/HistoryPage"; 
+import MedicationTracker from "./pages/patient/MedicationTracker"; 
+import ProfilePage from "./pages/patient/ProfilePage";
+import RequestsPage from "./pages/patient/RequestsPage"; // GezginindeRequestsPage.jsx olarak görünüyor
+
+// Sayfalar - ECZACI
 import PharmacyDashboard from "./pages/pharmacist/PharmacyDashboard";
+import InventoryPage from "./pages/pharmacist/InventoryPage"; 
+import PharmacyPage from "./pages/pharmacist/PharmacyPage"; 
+import SettingsPage from "./pages/pharmacist/SettingsPage";
 
-// Extra pages
-import RequestsPage from "./pages/patient/RequestsPage";
+// Sayfalar - DOKTOR
+import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorRequestsPage from "./pages/doctor/DoctorRequestsPage";
-// 🔥 Yeni eklediğimiz sayfa buraya import edildi
+import DoctorPatientsPage from "./pages/doctor/DoctorPatientsPage";
 import DoctorPrescriptionsPage from "./pages/doctor/DoctorPrescriptionsPage"; 
-
-// Protected Route
-import ProtectedRoute from "./routes/ProtectedRoute";
+import DoctorProfilePage from "./pages/doctor/DoctorProfilePage";
 import TaskPage from "./pages/doctor/TaskPage";
+
+// Güvenlik
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   return (
     <TaskProvider>
-      <BrowserRouter>
-        <Routes>
+      <HealthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
 
-          {/* LOGIN */}
-          <Route path="/" element={<Login />} />
+            {/* ================= HASTA PANELİ (TAMİR EDİLDİ) ================= */}
+            <Route
+              path="/patient"
+              element={<ProtectedRoute role="patient"><PatientLayout /></ProtectedRoute>}
+            >
+              <Route index element={<PatientDashboard />} />
+              <Route path="tracking" element={<HealthTracking />} />
+              <Route path="history" element={<HistoryPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              
+              {/* ÇIKIŞ YAPMA HATASINI ÖNLEYEN KRİTİK YOLLAR */}
+              <Route path="medicines" element={<MedicationTracker />} />
+              <Route path="medicine" element={<MedicationTracker />} />
+              
+              {/* Eczane İşlemleri: Hem pharmacy hem requests olarak tanımladık */}
+              <Route path="pharmacy" element={<RequestsPage />} />
+              <Route path="requests" element={<RequestsPage />} />
+            </Route>
 
-          // ... Diğer importlar ...
+            {/* ================= ECZACI PANELİ (TAMİR EDİLDİ) ================= */}
+            <Route
+              path="/pharmacist"
+              element={<ProtectedRoute role="pharmacist"><PharmacyLayout /></ProtectedRoute>}
+            >
+              <Route index element={<PharmacyDashboard />} />
+              <Route path="inventory" element={<InventoryPage />} />
+              <Route path="requests" element={<PharmacyPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              <Route path="profile" element={<PharmacyDashboard />} />
+            </Route>
 
-// ================= DOKTOR =================
-<Route
-  path="/doctor"
-  element={
-    <ProtectedRoute role="doctor">
-      <DoctorLayout />
-    </ProtectedRoute>
-  }
->
-  <Route index element={<DoctorDashboard />} />
-  <Route path="requests" element={<DoctorRequestsPage />} />
-  <Route path="patients" element={<DoctorPatientsPage />} />
-  <Route path="prescriptions" element={<DoctorPrescriptionsPage />} />
-  
-  {/* ✅ DOĞRU KULLANIM: Diğer iki satırı silip sadece bunu bırakın */}
-  <Route path="profile" element={<DoctorProfilePage />} />
-  
-  <Route path="tasks" element={<TaskPage />} />
-</Route>
+            {/* ================= DOKTOR PANELİ (KORUNDU) ================= */}
+            <Route
+              path="/doctor"
+              element={<ProtectedRoute role="doctor"><DoctorLayout /></ProtectedRoute>}
+            >
+              <Route index element={<DoctorDashboard />} />
+              <Route path="requests" element={<DoctorRequestsPage />} />
+              <Route path="patients" element={<DoctorPatientsPage />} />
+              <Route path="prescriptions" element={<DoctorPrescriptionsPage />} />
+              <Route path="profile" element={<DoctorProfilePage />} />
+              <Route path="tasks" element={<TaskPage />} />
+            </Route>
 
-          {/* ================= HASTA ================= */}
-          <Route
-            path="/patient"
-            element={
-              <ProtectedRoute role="patient">
-                <PatientLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<PatientDashboard />} />
-            <Route path="requests" element={<RequestsPage />} />
-            <Route path="tracking" element={<div>Kullanım Takibi</div>} />
-            <Route path="pharmacy" element={<div>Eczane</div>} />
-            <Route path="reminders" element={<div>Hatırlatmalar</div>} />
-            <Route path="profile" element={<div>Profil</div>} />
-          </Route>
-
-          {/* ================= ECZACI ================= */}
-          <Route
-            path="/pharmacist"
-            element={
-              <ProtectedRoute role="pharmacist">
-                <PharmacyLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<PharmacyDashboard />} />
-          </Route>
-
-        </Routes>
-            
-        <Toast />
-      </BrowserRouter>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <Toast />
+        </BrowserRouter>
+      </HealthProvider>
     </TaskProvider>
   );
 }
